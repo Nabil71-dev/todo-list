@@ -1,6 +1,6 @@
 import Footer from "../component/common/Footer";
-import TaskProvider from "../component/contexts/task/Task.provider";
 import TaskBoard from "../component/task-board";
+import TaskProvider from "../contexts/task/Task.provider";
 
 const TaskLayout = () => {
   return (

@@ -1,7 +1,7 @@
 import { useReducer } from "react";
-import { initialTaskTasks } from "../../../contant";
 import { taskReducer } from "./task.reducer";
 import { TaskContext, TaskDispatchContext } from "./task.context";
+import { initialTaskTasks } from "../../contant";
 
 export default function TaskProvider({ children }: any) {
   const [task, dispatch] = useReducer(taskReducer, initialTaskTasks);

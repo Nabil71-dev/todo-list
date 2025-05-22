@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "../../common/Button";
 import { useConfirm } from "../../common/ConfirmModal";
-import { useTasks, useTasksDispatch } from "../../contexts/task/hook";
+import { useTasks, useTasksDispatch } from "../../../contexts/task/hook";
 
 interface TaskHeaderProps {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;

@@ -2,8 +2,8 @@ import React from "react";
 import StarIcon from "../../../icons/Star.icon";
 import Button from "../../common/Button";
 import { useConfirm } from "../../common/ConfirmModal";
-import { useTasks, useTasksDispatch } from "../../contexts/task/hook";
 import { getRandomTagColor } from "../../../utils/random.color";
+import { useTasks, useTasksDispatch } from "../../../contexts/task/hook";
 // Suggested change from getRandomTagColor to deterministic
 
 interface Task {
@@ -96,6 +96,7 @@ const TaskTable: React.FC<TaskTableProps> = ({
                       label="Edit"
                       color="bg-blue-500"
                       onClick={() => {
+                        console.log(task)
                         setSelectedTask(task);
                         setModalOpen(true);
                       }}

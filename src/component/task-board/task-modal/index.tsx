@@ -8,6 +8,7 @@ interface TaskModalProps {
 }
 
 const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, initialData }) => {
+  console.log({initialData})
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <TaskForm initialData={initialData ?? undefined} onCancel={onClose} />
