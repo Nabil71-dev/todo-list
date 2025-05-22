@@ -96,7 +96,6 @@ const TaskTable: React.FC<TaskTableProps> = ({
                       label="Edit"
                       color="bg-blue-500"
                       onClick={() => {
-                        console.log(task)
                         setSelectedTask(task);
                         setModalOpen(true);
                       }}
