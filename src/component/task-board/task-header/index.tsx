@@ -1,60 +1,40 @@
 import React from "react";
 import Button from "../../common/Button";
-import TaskModal from "../task-modal";
 import { useConfirm } from "../../common/ConfirmModal";
+import { useTasks, useTasksDispatch } from "../../contexts/task/hook";
 
 interface TaskHeaderProps {
-  isModalOpen: boolean;
-  setModalOpen: Function;
-  tasks: number;
-  setSelectedTask: Function;
-  handleSubmit: Function;
-  handleDeleteAllTasks:Function;
+  setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TaskHeader: React.FC<TaskHeaderProps> = (props) => {
-  const {
-    setSelectedTask,
-    isModalOpen,
-    setModalOpen,
-    tasks,
-    handleSubmit,
-    handleDeleteAllTasks,
-  } = props;
-  const openModal = () => setModalOpen(true);
-
+const TaskHeader: React.FC<TaskHeaderProps> = ({ setModalOpen }) => {
   const { confirm } = useConfirm();
+  const tasks = useTasks();
+  const dispatch = useTasksDispatch();
+
+  const openModal = () => setModalOpen(true);
 
   const handleDeleteAll = () => {
     confirm({
-      message: "Are you sure you want to delete this task?",
-      title: "Delete Task",
-      onConfirm: () => {
-        handleDeleteAllTasks()
-      },
+      message: "Are you sure you want to delete all tasks?",
+      title: "Delete All Tasks",
+      onConfirm: () => dispatch({ type: "deleteAll" }),
     });
   };
 
   return (
     <div className="w-full flex justify-between items-center py-4 border-b border-gray-200">
-      <h2 className="text-xl font-semibold text-gray-800">Tasks - {tasks}</h2>
+      <h2 className="text-xl font-semibold text-gray-800">
+        Tasks - {tasks?.length ?? 0}
+      </h2>
       <div className="flex gap-2">
         <Button label="Add Task" onClick={openModal} color="bg-blue-600" />
         <Button
-          label="Delete All Task"
+          label="Delete All Tasks"
           onClick={handleDeleteAll}
           color="bg-red-600"
         />
       </div>
-
-      <TaskModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setModalOpen(false);
-          setSelectedTask(null);
-        }}
-        onSubmit={handleSubmit}
-      />
     </div>
   );
 };

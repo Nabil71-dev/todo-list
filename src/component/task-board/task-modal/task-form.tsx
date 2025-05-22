@@ -3,6 +3,7 @@ import Input from "../../common/Input";
 import Select from "../../common/Select";
 import { PRIORITY_OPTIONS } from "../../../contant";
 import Button from "../../common/Button";
+import { useTasksDispatch } from "../../contexts/task/hook";
 
 export interface TaskData {
   id?: string;
@@ -10,20 +11,18 @@ export interface TaskData {
   description: string;
   tags: string[];
   priority: string;
+  isFavorite?: boolean;
 }
 
 interface TaskFormProps {
   initialData?: TaskData;
   onCancel: () => void;
-  onSubmit: (task: TaskData) => void;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({
-  initialData,
-  onCancel,
-  onSubmit,
-}) => {
-  const [formData, setFormData] = useState( {
+const TaskForm: React.FC<TaskFormProps> = ({ initialData, onCancel }) => {
+  const dispatch = useTasksDispatch();
+
+  const [formData, setFormData] = useState({
     title: "",
     description: "",
     tags: "",
@@ -51,32 +50,36 @@ const TaskForm: React.FC<TaskFormProps> = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const tagsArray = formData.tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
 
-    const uuid = crypto.randomUUID();
-    const taskData: TaskData = {
-      ...(initialData?.id ? { id: initialData.id } : { id: uuid }),
-      title: formData.title,
-      description: formData.description,
-      tags: tagsArray,
+    if (!formData.title.trim() || !formData.description.trim()) return;
+
+    const task: TaskData = {
+      id: initialData?.id,
+      title: formData.title.trim(),
+      description: formData.description.trim(),
       priority: formData.priority,
+      tags: formData.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean),
+      isFavorite: initialData?.isFavorite ?? false,
     };
-    
-    onSubmit(taskData);
+
+    if (initialData?.id) {
+      dispatch({ type: "update", task });
+    } else {
+      dispatch({ type: "add", ...task });
+    }
+
     onCancel();
   };
 
-  const isEditMode = !!initialData?.id;
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <h2 className="text-xl font-semibold mb-4">
-        {isEditMode ? "Update Task" : "Add New Task"}
+        {initialData?.id ? "Update Task" : "Add New Task"}
       </h2>
 
       <Input
@@ -85,51 +88,40 @@ const TaskForm: React.FC<TaskFormProps> = ({
         value={formData.title}
         onChange={handleChange}
         required
-        type="text"
       />
 
-      <div>
-        <label className="block mb-1 font-medium">Description</label>
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          rows={4}
-          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+      <Input
+        label="Description"
+        name="description"
+        value={formData.description}
+        onChange={handleChange}
+        required
+      />
 
       <Input
         label="Tags (comma separated)"
         name="tags"
         value={formData.tags}
         onChange={handleChange}
-        placeholder="e.g. urgent, frontend, bug"
-        type="text"
-        required
+        placeholder="e.g. frontend, urgent"
       />
 
       <Select
         label="Priority"
         name="priority"
+        options={PRIORITY_OPTIONS}
         value={formData.priority}
         onChange={handleChange}
-        options={PRIORITY_OPTIONS}
       />
 
-      <div className="flex justify-end gap-2 mt-6">
+      <div className="flex justify-end gap-2">
         <Button
-          color="bg-gray-300"
-          textColor="text-gray-700"
-          onClick={onCancel}
-          type="button"
           label="Cancel"
+          type="button"
+          onClick={onCancel}
+          color="bg-gray-400"
         />
-        <Button
-          color="bg-blue-600"
-          type="submit"
-          label={isEditMode ? "Update Task" : "Add Task"}
-        />
+        <Button label="Submit" type="submit" color="bg-blue-600" />
       </div>
     </form>
   );

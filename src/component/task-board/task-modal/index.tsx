@@ -4,18 +4,13 @@ import TaskForm, { type TaskData } from "./task-form";
 interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialData?: TaskData;
-  onSubmit: (task: TaskData) => void;
+  initialData?: TaskData | null;
 }
 
-const TaskModal = ({ isOpen, onClose, initialData, onSubmit }: TaskModalProps) => {
+const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, initialData }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <TaskForm
-        initialData={initialData}
-        onSubmit={onSubmit}
-        onCancel={onClose}
-      />
+      <TaskForm initialData={initialData ?? undefined} onCancel={onClose} />
     </Modal>
   );
 };
