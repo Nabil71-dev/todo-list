@@ -22,20 +22,11 @@ interface TaskFormProps {
 const TaskForm: React.FC<TaskFormProps> = ({ initialData, onCancel }) => {
   const dispatch = useTasksDispatch();
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    tags: "",
-    priority: "Medium",
+    title: initialData?.title || "",
+    description: initialData?.description || "",
+    tags: (initialData?.tags || []).join(", ") || "",
+    priority: initialData?.priority || "Medium",
   });
-
-  useEffect(() => {
-    setFormData({
-      title: initialData?.title || "",
-      description: initialData?.description || "",
-      tags: (initialData?.tags || []).join(", "),
-      priority: initialData?.priority || "Medium",
-    });
-  }, [initialData]);
 
   const handleChange = (
     e: React.ChangeEvent<

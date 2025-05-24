@@ -14,7 +14,7 @@ const TaskBoard: React.FC = () => {
   return (
     <div className="w-full max-w-4xl p-6 bg-white shadow-lg rounded-xl border border-gray-200">
       <div className="flex justify-end">
-        <SearchInput onSearch={(e) => setIsContain(e.target.value)} />
+        <SearchInput onSearch={(e) => setTimeout(()=>{setIsContain(e.target.value)},1500)} />
       </div>
 
       <TaskHeader
